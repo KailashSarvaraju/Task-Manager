@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TASK PLANNER</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script,js"></script>
+</head>
+<body>
+  <div id="notificationContainer"></div>
+
+  <!-- APP WRAPPER -->
+  <div id="app">
+
+    <!-- HEADER -->
+    <header>
+      <h1>TASK PLANNER</h1>
+      <p>Your daily focus planner</p>
+    </header>
+
+    <!-- STATS SECTION -->
+    <section id="stats">
+      <div class="stat-box">
+        <h2 id="totalCount">0</h2>
+        <p>Total</p>
+      </div>
+
+      <div class="stat-box">
+        <h2 id="doneCount">0</h2>
+        <p>Completed</p>
+      </div>
+
+      <div class="stat-box">
+        <h2 id="focusPercent">0%</h2>
+        <p>Focus</p>
+      </div>
+    </section>
+
+    <!-- TIME FILTER TABS -->
+    <section id="time-tabs">
+      <button class="tab active" data-type="today">Today</button>
+      <button class="tab" data-type="tomorrow">Tomorrow</button>
+      <button class="tab" data-type="week">This Week</button>
+      <button class="tab" data-type="month">This Month</button>
+      <button class="tab" data-type="completed">Completed</button>
+      <button class="tab" data-type="all">All Tasks</button>
+
+    </section>
+
+    <!-- ADD TASK -->
+    <section id="add-task">
+      <input 
+        type="text" 
+        id="taskInput" 
+        placeholder="Enter your task"
+      />
+
+      <select id="categorySelect">
+        <option value="today">Today</option>
+        <option value="tomorrow">Tomorrow</option>
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+      </select>
+
+      <button id="addTaskBtn">Add Task</button>
+    </section>
+
+    <!-- TASK LIST -->
+  <section id="tasks">
+  <p id="emptyState" class="empty-state">No tasks here 🎉</p>
+  <ul id="taskList"></ul>
+  <p id="softReminder" class="soft-reminder hidden">
+  <!-- Text will appear dynamically -->
+</p>
+
+</section>
+
+
+    <!-- WRAP MY DAY BUTTON -->
+    <button id="wrapDayBtn" class="wrap-btn">
+      ⚡ Wrap My Day
+    </button>
+
+  </div>
+
+  <!-- WRAP SUMMARY MODAL -->
+  <div id="wrapModal" class="wrap-modal hidden">
+  <div class="wrap-card">
+    <h2>Wrap My Day</h2>
+
+    <p>🔥 Streak</p>
+    <h3 id="streak">0 days</h3>
+
+    <p>🎯 Efficiency</p>
+    <h3 id="efficiency">0%</h3>
+
+    <button id="closeWrap">Close</button>
+  </div>
+</div>
+
+
+  <script src="script.js"></script>
+</body>
+</html>

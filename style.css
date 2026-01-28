@@ -1,0 +1,317 @@
+/* ---------- RESET & BASE ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background: #f5f6fb;
+  color: #1f2937;
+  padding: 16px;
+}
+
+/* ---------- APP WRAPPER ---------- */
+#app {
+  max-width: 420px;
+  margin: auto;
+}
+
+/* ---------- HEADER ---------- */
+header {
+  margin-bottom: 16px;
+}
+
+header h1 {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+header p {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ---------- STATS ---------- */
+#stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-box {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.stat-box h2 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.stat-box p {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* ---------- TIME TABS ---------- */
+#time-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  background: #e5e7eb;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #5b5ce2;
+  color: #ffffff;
+}
+
+/* ---------- ADD TASK ---------- */
+#add-task {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+#add-task input,
+#add-task select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+#addTaskBtn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: #5b5ce2;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ---------- TASK LIST ---------- */
+#tasks {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+#taskList {
+  list-style: none;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 12px;
+  background: #f9fafb;
+  margin-bottom: 8px;
+}
+
+.task-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.task-left span.completed {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+/* ---------- DESKTOP ---------- */
+@media (min-width: 768px) {
+  #app {
+    max-width: 700px;
+  }
+}
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 16px;
+  cursor: pointer;
+}
+/* ---------- WRAP MY DAY ---------- */
+.wrap-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: #111827;
+  color: #ffffff;
+  font-size: 15px;
+  margin-top: 16px;
+  cursor: pointer;
+}
+
+/* ---------- MODAL ---------- */
+.wrap-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wrap-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 320px;
+  text-align: center;
+}
+
+.wrap-card h2 {
+  margin-bottom: 12px;
+}
+
+.wrap-card p {
+  margin: 8px 0;
+}
+
+.wrap-card button {
+  margin-top: 12px;
+  padding: 10px;
+  width: 100%;
+  border-radius: 12px;
+  border: none;
+  background: #5b5ce2;
+  color: white;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+.wrap-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.wrap-modal.hidden {
+  display: none;
+}
+
+.wrap-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 280px;
+  text-align: center;
+}
+.empty-state {
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+  margin-top: 30px;
+}
+/* Task animation */
+.task-item {
+  animation: slideIn 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Checkbox smooth effect */
+.task-left input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.task-left input[type="checkbox"]:checked {
+  transform: scale(1.1);
+}
+
+/* Completed task text */
+.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+  transition: all 0.25s ease;
+}
+.soft-reminder {
+  text-align: center;
+  background: #fffae6;
+  color: #b87d00;
+  border: 1px solid #ffe58f;
+  padding: 12px;
+  margin: 14px 0;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.hidden {
+  display: none;
+}
+#notificationContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.notification {
+  background: #4caf50; /* green */
+  color: #fff;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.5s ease;
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+.notification.error {
+  background: #f44336; /* red for errors */
+}
+.notification.info {
+  background: #2196f3; /* blue for info */
+}
