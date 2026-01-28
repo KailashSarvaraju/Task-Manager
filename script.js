@@ -160,7 +160,10 @@ function renderTasks() {
         <input type="checkbox" ${task.completed ? "checked" : ""} />
         <span class="${task.completed ? "completed" : ""}">${task.title}</span>
       </div>
-      <button class="delete-btn">✕</button>
+      <button class="delete-btn" onclick="deleteTask(${task.id})" aria-label="Delete task">
+  🗑️
+</button>
+
     `;
 
     li.querySelector("input[type='checkbox']").addEventListener("change", () => toggleTask(task.id));
