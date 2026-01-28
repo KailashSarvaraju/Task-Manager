@@ -227,3 +227,23 @@ setInterval(checkSoftReminder, 60 * 60 * 1000);
 
 // ---------- INIT ----------
 renderTasks();
+// 🌙 Dark Mode Toggle
+const darkToggle = document.getElementById("darkModeToggle");
+
+// Load preference
+if (localStorage.getItem("darkMode") === "enabled") {
+  document.body.classList.add("dark");
+  darkToggle.textContent = "☀️";
+}
+
+darkToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    localStorage.setItem("darkMode", "enabled");
+    darkToggle.textContent = "☀️";
+  } else {
+    localStorage.setItem("darkMode", "disabled");
+    darkToggle.textContent = "🌙";
+  }
+});

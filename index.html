@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TASK PLANNER</title>
+  <title>Task Planner</title>
+
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css" />
-  <script src="script,js"></script>
 </head>
+
 <body>
+  <!-- Notifications -->
   <div id="notificationContainer"></div>
 
   <!-- APP WRAPPER -->
@@ -17,6 +20,8 @@
     <header>
       <h1>TASK PLANNER</h1>
       <p>Your daily focus planner</p>
+      <button id="darkModeToggle" class="dark-toggle">🌙</button>
+
     </header>
 
     <!-- STATS SECTION -->
@@ -45,15 +50,15 @@
       <button class="tab" data-type="month">This Month</button>
       <button class="tab" data-type="completed">Completed</button>
       <button class="tab" data-type="all">All Tasks</button>
-
     </section>
 
     <!-- ADD TASK -->
     <section id="add-task">
-      <input 
-        type="text" 
-        id="taskInput" 
+      <input
+        type="text"
+        id="taskInput"
         placeholder="Enter your task"
+        aria-label="Task input"
       />
 
       <select id="categorySelect">
@@ -67,15 +72,12 @@
     </section>
 
     <!-- TASK LIST -->
-  <section id="tasks">
-  <p id="emptyState" class="empty-state">No tasks here 🎉</p>
-  <ul id="taskList"></ul>
-  <p id="softReminder" class="soft-reminder hidden">
-  <!-- Text will appear dynamically -->
-</p>
+    <section id="tasks">
+      <p id="emptyState" class="empty-state">No tasks here 🎉</p>
+      <ul id="taskList"></ul>
 
-</section>
-
+      <p id="softReminder" class="soft-reminder hidden"></p>
+    </section>
 
     <!-- WRAP MY DAY BUTTON -->
     <button id="wrapDayBtn" class="wrap-btn">
@@ -86,20 +88,20 @@
 
   <!-- WRAP SUMMARY MODAL -->
   <div id="wrapModal" class="wrap-modal hidden">
-  <div class="wrap-card">
-    <h2>Wrap My Day</h2>
+    <div class="wrap-card">
+      <h2>Wrap My Day</h2>
 
-    <p>🔥 Streak</p>
-    <h3 id="streak">0 days</h3>
+      <p>🔥 Streak</p>
+      <h3 id="streak">0 days</h3>
 
-    <p>🎯 Efficiency</p>
-    <h3 id="efficiency">0%</h3>
+      <p>🎯 Efficiency</p>
+      <h3 id="efficiency">0%</h3>
 
-    <button id="closeWrap">Close</button>
+      <button id="closeWrap">Close</button>
+    </div>
   </div>
-</div>
 
-
+  <!-- Script (ONLY ONE, CORRECT) -->
   <script src="script.js"></script>
 </body>
 </html>

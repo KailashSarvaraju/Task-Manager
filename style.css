@@ -315,3 +315,185 @@ header p {
 .notification.info {
   background: #2196f3; /* blue for info */
 }
+/* ---------- RESPONSIVE BASE ---------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 12px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f5f6fa;
+}
+
+/* ---------- MAIN CONTAINER ---------- */
+.app-container {
+  max-width: 420px;
+  margin: auto;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+/* ---------- INPUT SECTION ---------- */
+.input-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.input-group input,
+.input-group select {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+/* ---------- ADD BUTTON ---------- */
+#addTaskBtn {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: none;
+  background: #4f46e5;
+  color: white;
+  margin-bottom: 12px;
+}
+
+/* ---------- TABS ---------- */
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 14px;
+}
+
+/* ---------- TASK ITEM ---------- */
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f9f9f9;
+  margin-bottom: 8px;
+}
+
+.task-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.task-left span {
+  font-size: 15px;
+}
+
+/* ---------- STATS ---------- */
+.stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-top: 14px;
+}
+
+/* ---------- MODAL (WRAP DAY) ---------- */
+.modal-content {
+  width: 90%;
+  max-width: 360px;
+}
+
+/* ---------- NOTIFICATIONS ---------- */
+.notification {
+  font-size: 14px;
+  padding: 10px 14px;
+}
+
+/* ---------- SOFT REMINDER ---------- */
+#softReminder {
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
+}
+/* ---------- DARK MODE ---------- */
+body.dark {
+  background: #0f172a;
+  color: #edeeef;
+}
+
+body.dark #app {
+  background: #020617;
+}
+
+body.dark header p {
+  color: #94a3b8;
+}
+
+body.dark .stat-box {
+  background: #020617;
+  box-shadow: none;
+}
+
+body.dark input,
+body.dark select {
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+}
+
+body.dark button {
+  background: #2563eb;
+  color: white;
+}
+
+body.dark .tab {
+  background: #020617;
+  color: #94a3b8;
+}
+
+body.dark .tab.active {
+  background: #2563eb;
+  color: white;
+}
+
+body.dark li {
+  background: #020617;
+  border-color: #334155;
+}
+
+body.dark .wrap-card {
+  background: #020617;
+  color: white;
+}
+
+/* Toggle button */
+.dark-toggle {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+/* Dark theme task container */
+body.dark #tasks {
+  background: #020617; /* deep navy */
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* Empty state text */
+body.dark .empty-state {
+  color: #94a3b8; /* soft slate */
+}
