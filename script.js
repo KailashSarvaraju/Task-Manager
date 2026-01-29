@@ -28,32 +28,35 @@ const efficiencyEl = document.getElementById("efficiency");
 const softReminder = document.getElementById("softReminder");
 const notificationContainer = document.getElementById("notificationContainer");
 
-// ---------- LOCAL STORAGE HELPERS ----------
+// ---------- STORAGE ----------
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-let wrapData = JSON.parse(localStorage.getItem("wrapData")) || {
-  streak: 0,
-  lastDate: null
-};
+// ---------- DAILY AUTO SHIFT (🔥 MAIN FIX) ----------
+function handleNewDay() {
+  if (lastOpenDate === todayDate) return;
 
-// ---------- CARRY OVER TODAY → TOMORROW ----------
-function carryOverTasks() {
   tasks = tasks.map(task => {
+    // Yesterday TODAY → TOMORROW (if not completed)
     if (task.category === "today" && !task.completed) {
       return { ...task, category: "tomorrow" };
     }
+
+    // Yesterday TOMORROW → TODAY
+    if (task.category === "tomorrow") {
+      return { ...task, category: "today" };
+    }
+
     return task;
   });
-  saveTasks();
-}
 
-// ---------- NEW DAY CHECK ----------
-if (lastOpenDate !== todayDate) {
-  carryOverTasks();
+  saveTasks();
   localStorage.setItem("lastOpenDate", todayDate);
 }
+
+// 🚀 RUN ON LOAD
+handleNewDay();
 
 // ---------- NOTIFICATIONS ----------
 function showNotification(message, type = "success", duration = 3000) {
@@ -66,7 +69,7 @@ function showNotification(message, type = "success", duration = 3000) {
 
   setTimeout(() => {
     notif.classList.remove("show");
-    setTimeout(() => notif.remove(), 500);
+    setTimeout(() => notif.remove(), 400);
   }, duration);
 }
 
@@ -75,7 +78,10 @@ addTaskBtn.addEventListener("click", () => {
   const text = taskInput.value.trim();
   const category = categorySelect.value;
 
-  if (text === "") return showNotification("Please enter a task!", "error");
+  if (!text) {
+    showNotification("Please enter a task!", "error");
+    return;
+  }
 
   const task = {
     id: Date.now(),
@@ -89,42 +95,31 @@ addTaskBtn.addEventListener("click", () => {
   taskInput.value = "";
   renderTasks();
 
-  showNotification(`Task "${task.title}" added!`);
+  showNotification("Task added ✅");
 });
 
-// Quick Add with Enter key
 taskInput.addEventListener("keydown", e => {
   if (e.key === "Enter") addTaskBtn.click();
 });
 
-// ---------- TOGGLE TASK ----------
+// ---------- TOGGLE ----------
 function toggleTask(id) {
-  tasks = tasks.map(task =>
-    task.id === id ? { ...task, completed: !task.completed } : task
+  tasks = tasks.map(t =>
+    t.id === id ? { ...t, completed: !t.completed } : t
   );
   saveTasks();
   renderTasks();
-
-  const task = tasks.find(t => t.id === id);
-  showNotification(
-    `Task "${task.title}" marked as ${task.completed ? "completed" : "incomplete"}`,
-    "info"
-  );
 }
 
-// ---------- DELETE TASK ----------
+// ---------- DELETE ----------
 function deleteTask(id) {
-  const task = tasks.find(t => t.id === id);
-  if (!confirm(`Are you sure you want to delete "${task.title}"?`)) return;
-
-  tasks = tasks.filter(task => task.id !== id);
+  tasks = tasks.filter(t => t.id !== id);
   saveTasks();
   renderTasks();
-
-  showNotification(`Task "${task.title}" deleted!`, "error");
+  showNotification("Task deleted 🗑️", "error");
 }
 
-// ---------- FILTER TABS ----------
+// ---------- FILTERS ----------
 tabs.forEach(tab => {
   tab.addEventListener("click", () => {
     tabs.forEach(t => t.classList.remove("active"));
@@ -134,39 +129,29 @@ tabs.forEach(tab => {
   });
 });
 
-// ---------- RENDER TASKS ----------
+// ---------- RENDER ----------
 function renderTasks() {
   taskList.innerHTML = "";
 
-  let filteredTasks = tasks;
-  if (activeFilter === "completed") filteredTasks = tasks.filter(t => t.completed);
-  else if (activeFilter !== "all") filteredTasks = tasks.filter(t => t.category === activeFilter);
+  let filtered = tasks;
+  if (activeFilter === "completed") filtered = tasks.filter(t => t.completed);
+  else if (activeFilter !== "all") filtered = tasks.filter(t => t.category === activeFilter);
 
-  // Empty state
-  if (filteredTasks.length === 0) {
-    emptyState.style.display = "block";
-    emptyState.innerText =
-      activeFilter === "completed" ? "No completed tasks yet ✅" : "No tasks here 🎉";
-  } else {
-    emptyState.style.display = "none";
-  }
+  emptyState.style.display = filtered.length ? "none" : "block";
 
-  // Task list
-  filteredTasks.forEach(task => {
+  filtered.forEach(task => {
     const li = document.createElement("li");
     li.className = "task-item";
+
     li.innerHTML = `
       <div class="task-left">
         <input type="checkbox" ${task.completed ? "checked" : ""} />
         <span class="${task.completed ? "completed" : ""}">${task.title}</span>
       </div>
-      <button class="delete-btn" onclick="deleteTask(${task.id})" aria-label="Delete task">
-  🗑️
-</button>
-
+      <button class="delete-btn">🗑️</button>
     `;
 
-    li.querySelector("input[type='checkbox']").addEventListener("change", () => toggleTask(task.id));
+    li.querySelector("input").addEventListener("change", () => toggleTask(task.id));
     li.querySelector(".delete-btn").addEventListener("click", () => deleteTask(task.id));
 
     taskList.appendChild(li);
@@ -182,20 +167,22 @@ function updateStats() {
 
   totalCount.innerText = total;
   doneCount.innerText = done;
-  focusPercent.innerText = total === 0 ? "0%" : Math.round((done / total) * 100) + "%";
+  focusPercent.innerText = total ? Math.round((done / total) * 100) + "%" : "0%";
 }
 
-// ---------- WRAP MY DAY ----------
-wrapBtn.addEventListener("click", () => {
-  const today = new Date().toDateString();
+// ---------- WRAP DAY ----------
+let wrapData = JSON.parse(localStorage.getItem("wrapData")) || { streak: 0, lastDate: null };
 
+wrapBtn.addEventListener("click", () => {
   const todayTasks = tasks.filter(t => t.category === "today");
   const doneToday = todayTasks.filter(t => t.completed).length;
-  const efficiency = todayTasks.length === 0 ? 0 : Math.round((doneToday / todayTasks.length) * 100);
+  const efficiency = todayTasks.length
+    ? Math.round((doneToday / todayTasks.length) * 100)
+    : 0;
 
-  if (wrapData.lastDate !== today) {
-    wrapData.streak += 1;
-    wrapData.lastDate = today;
+  if (wrapData.lastDate !== todayDate) {
+    wrapData.streak++;
+    wrapData.lastDate = todayDate;
   }
 
   localStorage.setItem("wrapData", JSON.stringify(wrapData));
@@ -210,30 +197,23 @@ closeWrap.addEventListener("click", () => wrapModal.classList.add("hidden"));
 
 // ---------- SOFT REMINDER ----------
 function checkSoftReminder() {
-  const now = new Date();
-  if (now.getHours() < 19) return;
+  if (new Date().getHours() < 19) return;
+  if (localStorage.getItem("lastReminder") === todayDate) return;
 
-  const today = new Date().toDateString();
-  if (localStorage.getItem("lastReminder") === today) return;
-
-  const completedToday = tasks.filter(t => t.category === "today" && t.completed);
-  if (completedToday.length === 0) {
-    softReminder.innerText = "Hey! You haven’t completed any tasks today. Stay on track! 💪";
+  const doneToday = tasks.some(t => t.category === "today" && t.completed);
+  if (!doneToday) {
+    softReminder.innerText = "You haven’t completed any tasks today 💪";
     softReminder.classList.remove("hidden");
-    localStorage.setItem("lastReminder", today);
+    localStorage.setItem("lastReminder", todayDate);
   }
 }
 
-// Run reminders
 checkSoftReminder();
 setInterval(checkSoftReminder, 60 * 60 * 1000);
 
-// ---------- INIT ----------
-renderTasks();
-// 🌙 Dark Mode Toggle
+// ---------- DARK MODE ----------
 const darkToggle = document.getElementById("darkModeToggle");
 
-// Load preference
 if (localStorage.getItem("darkMode") === "enabled") {
   document.body.classList.add("dark");
   darkToggle.textContent = "☀️";
@@ -241,12 +221,31 @@ if (localStorage.getItem("darkMode") === "enabled") {
 
 darkToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark");
-
-  if (document.body.classList.contains("dark")) {
-    localStorage.setItem("darkMode", "enabled");
-    darkToggle.textContent = "☀️";
-  } else {
-    localStorage.setItem("darkMode", "disabled");
-    darkToggle.textContent = "🌙";
-  }
+  const enabled = document.body.classList.contains("dark");
+  localStorage.setItem("darkMode", enabled ? "enabled" : "disabled");
+  darkToggle.textContent = enabled ? "☀️" : "🌙";
 });
+
+// ---------- INIT ----------
+renderTasks();
+// ---------- MIDNIGHT AUTO REFRESH ----------
+function scheduleMidnightRefresh() {
+  const now = new Date();
+  const midnight = new Date();
+
+  midnight.setHours(24, 0, 0, 0); // next midnight
+  const timeUntilMidnight = midnight - now;
+
+  setTimeout(() => {
+    handleNewDay();   // reuse your daily logic
+    renderTasks();   // refresh UI
+    showNotification("New day started 🌅");
+// optional but safest
+
+    // Schedule again for next day
+    scheduleMidnightRefresh();
+  }, timeUntilMidnight);
+}
+
+// Start midnight watcher
+scheduleMidnightRefresh();
