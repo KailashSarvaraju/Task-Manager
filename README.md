@@ -1,19 +1,6 @@
-# Task Planner
+# FocusFlow
 
-Task Planner is a simple web-based task management app built using **HTML, CSS, and JavaScript**.  
-It helps users plan tasks, track progress, and stay productive.
+A minimal daily task planner with automatic day rollover,
+focus stats, dark mode, and local storage support.
 
-🔗 Live Demo:  
-https://kailashsarvaraju.github.io/Task-Manager/
-
-## Features
-- Add, complete, and delete tasks
-- Task filtering by category
-- Daily progress and efficiency tracking
-- Data stored using LocalStorage
-
-## Tech Stack
-- HTML
-- CSS
-- JavaScript
-
+Live demo: https://kailashsarvaraju.github.io/FocusFlow/
