@@ -1,6 +1,4 @@
-// ---------- DATE CHECK ----------
-const todayDate = new Date().toDateString();
-const lastOpenDate = localStorage.getItem("lastOpenDate");
+console.log("✅ Task Planner JS Loaded");
 
 // ---------- DATA ----------
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -27,27 +25,27 @@ const efficiencyEl = document.getElementById("efficiency");
 
 const softReminder = document.getElementById("softReminder");
 const notificationContainer = document.getElementById("notificationContainer");
+const darkToggle = document.getElementById("darkModeToggle");
 
 // ---------- STORAGE ----------
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// ---------- DAILY AUTO SHIFT (🔥 MAIN FIX) ----------
+// ---------- DAILY AUTO SHIFT (FIXED) ----------
 function handleNewDay() {
+  const todayDate = new Date().toDateString();
+  const lastOpenDate = localStorage.getItem("lastOpenDate");
+
   if (lastOpenDate === todayDate) return;
 
   tasks = tasks.map(task => {
-    // Yesterday TODAY → TOMORROW (if not completed)
     if (task.category === "today" && !task.completed) {
       return { ...task, category: "tomorrow" };
     }
-
-    // Yesterday TOMORROW → TODAY
     if (task.category === "tomorrow") {
       return { ...task, category: "today" };
     }
-
     return task;
   });
 
@@ -55,46 +53,38 @@ function handleNewDay() {
   localStorage.setItem("lastOpenDate", todayDate);
 }
 
-// 🚀 RUN ON LOAD
+// Run on load
 handleNewDay();
 
 // ---------- NOTIFICATIONS ----------
-function showNotification(message, type = "success", duration = 3000) {
-  const notif = document.createElement("div");
-  notif.className = `notification ${type}`;
-  notif.innerText = message;
-  notificationContainer.appendChild(notif);
+function showNotification(msg, type = "success", time = 3000) {
+  const n = document.createElement("div");
+  n.className = `notification ${type}`;
+  n.innerText = msg;
+  notificationContainer.appendChild(n);
 
-  setTimeout(() => notif.classList.add("show"), 10);
-
+  setTimeout(() => n.classList.add("show"), 10);
   setTimeout(() => {
-    notif.classList.remove("show");
-    setTimeout(() => notif.remove(), 400);
-  }, duration);
+    n.classList.remove("show");
+    setTimeout(() => n.remove(), 300);
+  }, time);
 }
 
 // ---------- ADD TASK ----------
 addTaskBtn.addEventListener("click", () => {
   const text = taskInput.value.trim();
-  const category = categorySelect.value;
+  if (!text) return showNotification("Enter a task!", "error");
 
-  if (!text) {
-    showNotification("Please enter a task!", "error");
-    return;
-  }
-
-  const task = {
+  tasks.push({
     id: Date.now(),
     title: text,
-    category,
+    category: categorySelect.value,
     completed: false
-  };
+  });
 
-  tasks.push(task);
   saveTasks();
   taskInput.value = "";
   renderTasks();
-
   showNotification("Task added ✅");
 });
 
@@ -135,7 +125,8 @@ function renderTasks() {
 
   let filtered = tasks;
   if (activeFilter === "completed") filtered = tasks.filter(t => t.completed);
-  else if (activeFilter !== "all") filtered = tasks.filter(t => t.category === activeFilter);
+  else if (activeFilter !== "all")
+    filtered = tasks.filter(t => t.category === activeFilter);
 
   emptyState.style.display = filtered.length ? "none" : "block";
 
@@ -145,8 +136,10 @@ function renderTasks() {
 
     li.innerHTML = `
       <div class="task-left">
-        <input type="checkbox" ${task.completed ? "checked" : ""} />
-        <span class="${task.completed ? "completed" : ""}">${task.title}</span>
+        <input type="checkbox" ${task.completed ? "checked" : ""}>
+        <span class="${task.completed ? "completed" : ""}">
+          ${task.title || task.text}
+        </span>
       </div>
       <button class="delete-btn">🗑️</button>
     `;
@@ -171,24 +164,27 @@ function updateStats() {
 }
 
 // ---------- WRAP DAY ----------
-let wrapData = JSON.parse(localStorage.getItem("wrapData")) || { streak: 0, lastDate: null };
+let wrapData = JSON.parse(localStorage.getItem("wrapData")) || {
+  streak: 0,
+  lastDate: null
+};
 
 wrapBtn.addEventListener("click", () => {
+  const today = new Date().toDateString();
   const todayTasks = tasks.filter(t => t.category === "today");
   const doneToday = todayTasks.filter(t => t.completed).length;
-  const efficiency = todayTasks.length
-    ? Math.round((doneToday / todayTasks.length) * 100)
-    : 0;
 
-  if (wrapData.lastDate !== todayDate) {
+  if (wrapData.lastDate !== today) {
     wrapData.streak++;
-    wrapData.lastDate = todayDate;
+    wrapData.lastDate = today;
   }
 
   localStorage.setItem("wrapData", JSON.stringify(wrapData));
 
   streakEl.innerText = wrapData.streak + " days";
-  efficiencyEl.innerText = efficiency + "%";
+  efficiencyEl.innerText = todayTasks.length
+    ? Math.round((doneToday / todayTasks.length) * 100) + "%"
+    : "0%";
 
   wrapModal.classList.remove("hidden");
 });
@@ -197,23 +193,45 @@ closeWrap.addEventListener("click", () => wrapModal.classList.add("hidden"));
 
 // ---------- SOFT REMINDER ----------
 function checkSoftReminder() {
+  const today = new Date().toDateString();
   if (new Date().getHours() < 19) return;
-  if (localStorage.getItem("lastReminder") === todayDate) return;
+  if (localStorage.getItem("lastReminder") === today) return;
 
-  const doneToday = tasks.some(t => t.category === "today" && t.completed);
-  if (!doneToday) {
+  if (!tasks.some(t => t.category === "today" && t.completed)) {
     softReminder.innerText = "You haven’t completed any tasks today 💪";
     softReminder.classList.remove("hidden");
-    localStorage.setItem("lastReminder", todayDate);
+    localStorage.setItem("lastReminder", today);
   }
 }
 
 checkSoftReminder();
 setInterval(checkSoftReminder, 60 * 60 * 1000);
 
-// ---------- DARK MODE ----------
-const darkToggle = document.getElementById("darkModeToggle");
+// ---------- MIDNIGHT AUTO REFRESH ----------
+function scheduleMidnightRefresh() {
+  const now = new Date();
+  const midnight = new Date();
+  midnight.setHours(24, 0, 0, 0);
 
+  setTimeout(() => {
+    handleNewDay();
+    renderTasks();
+    showNotification("New day started 🌅");
+    scheduleMidnightRefresh();
+  }, midnight - now);
+}
+
+scheduleMidnightRefresh();
+
+// ---------- TAB RETURN FIX ----------
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    handleNewDay();
+    renderTasks();
+  }
+});
+
+// ---------- DARK MODE ----------
 if (localStorage.getItem("darkMode") === "enabled") {
   document.body.classList.add("dark");
   darkToggle.textContent = "☀️";
@@ -228,24 +246,3 @@ darkToggle.addEventListener("click", () => {
 
 // ---------- INIT ----------
 renderTasks();
-// ---------- MIDNIGHT AUTO REFRESH ----------
-function scheduleMidnightRefresh() {
-  const now = new Date();
-  const midnight = new Date();
-
-  midnight.setHours(24, 0, 0, 0); // next midnight
-  const timeUntilMidnight = midnight - now;
-
-  setTimeout(() => {
-    handleNewDay();   // reuse your daily logic
-    renderTasks();   // refresh UI
-    showNotification("New day started 🌅");
-// optional but safest
-
-    // Schedule again for next day
-    scheduleMidnightRefresh();
-  }, timeUntilMidnight);
-}
-
-// Start midnight watcher
-scheduleMidnightRefresh();
