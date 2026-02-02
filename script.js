@@ -32,7 +32,7 @@ function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// ---------- DAILY AUTO SHIFT (FIXED) ----------
+// ---------- DAILY AUTO SHIFT ----------
 function handleNewDay() {
   const todayDate = new Date().toDateString();
   const lastOpenDate = localStorage.getItem("lastOpenDate");
@@ -53,17 +53,20 @@ function handleNewDay() {
   localStorage.setItem("lastOpenDate", todayDate);
 }
 
-// Run on load
 handleNewDay();
 
-// ---------- NOTIFICATIONS ----------
-function showNotification(msg, type = "success", time = 3000) {
+// ---------- CENTER POPUP NOTIFICATIONS ----------
+function showNotification(msg, type = "success", time = 2000) {
+  notificationContainer.innerHTML = ""; // only one popup
+
   const n = document.createElement("div");
   n.className = `notification ${type}`;
   n.innerText = msg;
+
   notificationContainer.appendChild(n);
 
-  setTimeout(() => n.classList.add("show"), 10);
+  requestAnimationFrame(() => n.classList.add("show"));
+
   setTimeout(() => {
     n.classList.remove("show");
     setTimeout(() => n.remove(), 300);
@@ -99,6 +102,7 @@ function toggleTask(id) {
   );
   saveTasks();
   renderTasks();
+  showNotification("Task updated ☑️", "info");
 }
 
 // ---------- DELETE ----------
@@ -138,7 +142,7 @@ function renderTasks() {
       <div class="task-left">
         <input type="checkbox" ${task.completed ? "checked" : ""}>
         <span class="${task.completed ? "completed" : ""}">
-          ${task.title || task.text}
+          ${task.title}
         </span>
       </div>
       <button class="delete-btn">🗑️</button>
@@ -216,7 +220,7 @@ function scheduleMidnightRefresh() {
   setTimeout(() => {
     handleNewDay();
     renderTasks();
-    showNotification("New day started 🌅");
+    showNotification("New day started 🌅", "info");
     scheduleMidnightRefresh();
   }, midnight - now);
 }

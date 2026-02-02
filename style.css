@@ -343,3 +343,51 @@ body.dark .dark-toggle {
   border: 1px solid #1e293b;
   box-shadow: none;
 }
+/* ---------- POPUP NOTIFICATION ---------- */
+#notificationContainer {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5000;
+}
+
+.notification {
+  background: #ffffff;
+  color: #111827;
+  padding: 16px 22px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all 0.25s ease;
+}
+
+.notification.show {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Types */
+.notification.success {
+  border-left: 5px solid #22c55e;
+}
+
+.notification.error {
+  border-left: 5px solid #ef4444;
+}
+
+.notification.info {
+  border-left: 5px solid #3b82f6;
+}
+
+/* Dark mode support */
+body.dark .notification {
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #1e293b;
+}
