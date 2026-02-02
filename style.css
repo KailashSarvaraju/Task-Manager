@@ -273,3 +273,73 @@ body.dark .wrap-btn {
     max-width: 700px;
   }
 }
+/* ---------- DARK MODE TOGGLE ---------- */
+header {
+  position: relative;
+}
+
+.dark-toggle {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #ffffff;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.dark-toggle:hover {
+  transform: scale(1.05);
+}
+body.dark .dark-toggle {
+  background: #1f2937;
+  color: #f3f4f6;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.app-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.dark-toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+
+  background: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  transition: transform 0.2s ease;
+}
+
+.dark-toggle:hover {
+  transform: translateY(-50%) scale(1.05);
+}
+body.dark .dark-toggle {
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #1e293b;
+  box-shadow: none;
+}
